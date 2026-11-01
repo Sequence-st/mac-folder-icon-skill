@@ -27,6 +27,7 @@ D="$(mktemp -d)" && git clone --depth 1 https://github.com/Sequence-st/mac-folde
 ```
 - `install.sh`는 스킬을 `~/.agents/skills/mac-folder-icon`(코덱스가 읽는 곳)에 복사하고, `~/.claude/skills/mac-folder-icon`(클로드 코드가 읽는 곳)에 연결한 뒤, 그림 도구(Pillow·numpy)를 확인합니다. 하나로 두 프로그램에서 다 써요.
 - git이 없으면 위 zip 주소를 받아 풀고 같은 `install.sh`를 실행하세요.
+- 코덱스 내장 skill-installer로 깔아도 됩니다: `--repo Sequence-st/mac-folder-icon-skill --path skills/mac-folder-icon` (이 경우 `~/.codex/skills`에만 들어가서 클로드 코드에는 안 보여요).
 - 끝나면 사용자에게 「새 대화에서 '우리 고양이 사진으로 폴더 아이콘 만들어줘'라고 말해 보세요」라고 안내하세요.
 
 ## 쓰는 법
