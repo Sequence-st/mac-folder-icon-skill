@@ -8,7 +8,10 @@ set -euo pipefail
 SRC="$(cd "$(dirname "$0")" && pwd)"
 NAME="mac-folder-icon"
 DEST="$HOME/.agents/skills/$NAME"
-[ "$(uname)" = "Darwin" ] || { echo "macOS only."; exit 1; }
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$SRC/install.ps1" 2>/dev/null || echo "$SRC/install.ps1")" ;;
+esac
+[ "$(uname)" = "Darwin" ] || { echo "macOS or Windows only."; exit 1; }
 
 if [ "$SRC" != "$DEST" ]; then
   mkdir -p "$HOME/.agents/skills"

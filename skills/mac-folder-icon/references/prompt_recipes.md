@@ -19,6 +19,10 @@ The icon: a classic rounded desktop folder seen straight from the front, about 1
 The icon: a classic rounded desktop folder seen straight from the front, about 1.25 times wider than tall. The folder itself is {NAME}'s face. The folder is {BASE_COLOR}; {NAME}'s {FUR_CAP_COLOR} cap of fur covers the top of the front panel with a soft wavy lower edge{CAP_MARK}; the two ears rise from the top corners of the front panel; the small face sits in the middle of the {LOWER_FACE_COLOR} front panel. The back panel has a small rounded tab on its upper left, and its top edge is one straight line.
 ```
 
+**F-윈도우 — 윈도우 노란 서류철 모양 (사용자가 원할 때만, ⚠️아직 시험 전이라 1장 먼저)**
+- 기본은 F1·F2 그대로 뽑는다. 맥 폴더 모양 그림도 윈도우에 그대로 입혀진다.
+- 「윈도우 폴더처럼」을 원하면 F1·F2 첫 문장의 `a classic rounded desktop folder`를 `a classic Windows-style manila file folder`로만 바꾸고, 색 칸은 그대로 채운다.
+
 **D — 앞판 그림자 (입체감)**
 ```
 Depth: the front panel casts one soft drop shadow onto the back panel. Right above the front panel's top edge and behind the ears, the back panel turns gradually a little darker, about 6 percent darker, in a soft band about 8 percent of the folder's height, deepest right at the front panel's edge and fading smoothly upward, so the front panel clearly sits in front of the back panel. This band is the only soft shading added to the picture; every other area keeps clean flat color with crisp edges.

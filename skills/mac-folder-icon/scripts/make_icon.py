@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Turn one generated folder picture (white background) into a macOS folder icon.
+"""Turn one generated folder picture (white background) into a folder icon for macOS and Windows.
 
     python3 make_icon.py <generated.png> <output_folder> [--name NAME] [--no-repair] [--keep-all] [--no-edge-fix]
 
@@ -15,7 +15,8 @@ Steps
                        clearly better, not more jagged (+15% max) and adds no light rim
   5. check board     : <name>_check.jpg = result on dark/light + 3x corner zooms
 
-Outputs in <output_folder>: <name>_1024.png, <name>_512.png, <name>_check.jpg, <name>_report.json
+Outputs in <output_folder>: <name>_1024.png, <name>_512.png (macOS), <name>.ico (Windows, 16-256 px),
+         <name>_check.jpg, <name>_report.json
 Needs: Python 3.9+, Pillow, numpy (OpenCV is used if present, not required).
 """
 import argparse
@@ -431,6 +432,11 @@ def check_board(src_rgb, icon, path, lines):
 
 
 def main():
+    for st in (sys.stdout, sys.stderr):  # agents read UTF-8; Windows pipes default to the local code page
+        try:
+            st.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("input")
     ap.add_argument("outdir")
@@ -461,9 +467,11 @@ def main():
     out512 = os.path.join(args.outdir, name + "_512.png")
     icon.save(out1024)
     icon.resize((512, 512), Image.LANCZOS).save(out512)
+    out_ico = os.path.join(args.outdir, name + ".ico")
+    icon.save(out_ico, sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
     report["halo_px"] = halo_pixels(icon)
     report["see_through_px"] = edge_translucent(icon)
-    report["outputs"] = [out1024, out512]
+    report["outputs"] = [out1024, out512, out_ico]
     rep = report["repair"]
     ed = report["edge"]
     edge_line = "see-through outline px: %d (limit %d) -> %s" % (ed["translucent_px"], EDGE_TRANSLUCENT_LIMIT, ed["result"])
@@ -482,7 +490,7 @@ def main():
     check_board(a, icon, check, lines)
     report["check_board"] = check
     report["seconds"] = round(time.time() - t0, 1)
-    with open(os.path.join(args.outdir, name + "_report.json"), "w") as fh:
+    with open(os.path.join(args.outdir, name + "_report.json"), "w", encoding="utf-8") as fh:
         json.dump(report, fh, ensure_ascii=False, indent=1)
     print(json.dumps({k: report[k] for k in ("outputs", "check_board", "halo_px", "see_through_px", "seconds", "opencv")}, ensure_ascii=False))
     for t in lines:

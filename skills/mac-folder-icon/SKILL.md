@@ -1,29 +1,31 @@
 ---
 name: mac-folder-icon
-description: 내 캐릭터 그림이나 반려동물 사진으로 맥(macOS) 폴더 아이콘을 만들어 실제 폴더에 입혀 주는 스킬. 주문서 작성 → 사용자가 쓰는 이미지 생성 경로 자동 선택(코덱스 내장 이미지 생성 / 클로드 코드에 연결된 이미지 MCP / 구글 플로우 브라우저 자동화 / 직접 뽑아 오기) → 테두리 수리 → 배경 지우기 → 맥 기본 폴더 크기 맞춤 → 어두운 배경 확대 검사 → 폴더에 입히기 → (선택) 바탕화면 새 폴더 자동 입히기. 트리거 — "폴더 아이콘", "맥 폴더 아이콘 바꾸기", "폴더를 우리 고양이로", "우리 강아지로 폴더 만들어줘", "내 캐릭터로 폴더", "바탕화면 폴더 귀엽게", "새 폴더 만들면 자동으로 바뀌게", "mac folder icon", "custom folder icon from my pet photo". macOS 전용.
+description: 내 캐릭터 그림이나 반려동물 사진으로 맥(macOS)·윈도우 폴더 아이콘을 만들어 실제 폴더에 입혀 주는 스킬. 주문서 작성 → 사용자가 쓰는 이미지 생성 경로 자동 선택(코덱스 내장 이미지 생성 / 클로드 코드에 연결된 이미지 MCP / 구글 플로우 브라우저 자동화 / 직접 뽑아 오기) → 테두리 수리 → 배경 지우기 → 맥 기본 폴더 크기 맞춤 → 어두운 배경 확대 검사 → 폴더에 입히기(맥 PNG / 윈도우 .ico) → (선택, 맥) 바탕화면 새 폴더 자동 입히기. 트리거 — "폴더 아이콘", "맥 폴더 아이콘 바꾸기", "윈도우 폴더 아이콘", "폴더를 우리 고양이로", "우리 강아지로 폴더 만들어줘", "내 캐릭터로 폴더", "바탕화면 폴더 귀엽게", "새 폴더 만들면 자동으로 바뀌게", "mac folder icon", "windows folder icon", "custom folder icon from my pet photo". macOS·Windows.
 ---
 
-# 맥 폴더 아이콘 만들기 (v0.2)
+# 폴더 아이콘 만들기 — 맥·윈도우 (v0.3)
 
-사진이나 캐릭터 그림 한 장으로 「파란 기본 폴더 → 그 아이 얼굴 폴더」를 만든다.
+사진이나 캐릭터 그림 한 장으로 「기본 폴더(맥 파란색·윈도우 노란색) → 그 아이 얼굴 폴더」를 만든다.
 그림은 사용자가 이미 쓰는 생성 도구로 뽑고, 나머지(테두리·배경·크기·입히기)는 이 스킬의 스크립트가 한다.
 
 `<SKILL>` = 이 SKILL.md가 있는 폴더. 경로는 전부 이 기준.
 
-## 0. 처음 한 번
+## 0. 처음 한 번 — 운영체제부터 본다
 
-```bash
-bash <SKILL>/scripts/setup.sh
-```
+- **맥**: `bash <SKILL>/scripts/setup.sh`
+- **윈도우**: `powershell -NoProfile -ExecutionPolicy Bypass -File <SKILL>\scripts\setup.ps1`
+  (클로드 코드의 Git Bash에서 `bash <SKILL>/scripts/setup.sh`를 불러도 알아서 이걸로 넘어간다)
+
 마지막 줄 `PY=...`의 파이썬을 아래 단계에서 쓴다(Pillow·numpy만 필요, 없으면 알아서 개인 환경에 설치).
-macOS가 아니면 여기서 멈추고 「맥 전용」이라고 알린다.
+윈도우에 파이썬이 없으면 python.org에서 설치하라고 안내한다(「Add python.exe to PATH」 체크).
+맥·윈도우가 아니면 여기서 멈춘다.
 
 ## 1. 받기 (질문은 최대 2개)
 
 - **누구로?** 반려동물 사진 / 내 캐릭터 그림 / 말로 설명. 파일은 끌어다 놓으면 된다고 안내.
 - **어디에 입힐까?** 폴더 이름이나 경로. 나중에 정해도 됨.
 - 그림체는 묻지 않고 기본값(아주 단순하고 귀여운 2D 스티커풍)으로 간다. 사용자가 원하면 바꾼다.
-- 작업 폴더 = `~/Pictures/folder-icons/<이름>/`. 원본은 여기에 `ref.<확장자>`로 복사. 결과물을 바탕화면에 흩지 않는다.
+- 작업 폴더 = `~/Pictures/folder-icons/<이름>/`(윈도우는 `%USERPROFILE%\Pictures\folder-icons\<이름>\`). 원본은 여기에 `ref.<확장자>`로 복사. 결과물을 바탕화면에 흩지 않는다.
 
 ## 2. 주문서 쓰기
 
@@ -56,7 +58,9 @@ macOS가 아니면 여기서 멈추고 「맥 전용」이라고 알린다.
 "$PY" <SKILL>/scripts/make_icon.py ~/Pictures/folder-icons/<이름>/raw_1.png ~/Pictures/folder-icons/<이름> --name icon_1
 ```
 테두리 수리(선이 정말 사라진 곳만. 연한 연필 선은 그대로 둠) → 흰 배경 지우기(가장자리 섞임까지 풀어서 밝은 띠 없음) → 가장 큰 덩어리만 남기기(구석 워터마크·잡티 제거) → 맥 기본 폴더 크기·위치 맞춤 → 외곽선 비침 검사(선 안쪽 2~6px가 반투명이면 바탕화면 색이 비쳐 희끗해 보임. 300px 넘으면 다시 잘라 선을 그 그림의 선 색으로 메우고, 더 나아질 때만 바꿈).
-결과: `icon_1_512.png`(입힐 파일) · `icon_1_1024.png` · `icon_1_check.jpg`(확인판) · `icon_1_report.json`.
+결과: `icon_1_512.png`(맥에 입힐 파일) · `icon_1.ico`(윈도우에 입힐 파일) · `icon_1_1024.png` · `icon_1_check.jpg`(확인판) · `icon_1_report.json`.
+그림은 맥 폴더 모양 그대로 윈도우에도 쓴다. 사용자가 「윈도우 노란 폴더 모양으로」를 원하면 `prompt_recipes.md`의 「F-윈도우」대로 다시 뽑는다.
+윈도우에서는 위 명령을 PowerShell로 `& "$PY" <SKILL>\scripts\make_icon.py "$env:USERPROFILE\Pictures\folder-icons\<이름>\raw_1.png" "$env:USERPROFILE\Pictures\folder-icons\<이름>" --name icon_1`처럼 부른다.
 
 ## 5. 검사 — 확인판을 직접 열어 눈으로 본다
 
@@ -80,6 +84,7 @@ macOS가 아니면 여기서 멈추고 「맥 전용」이라고 알린다.
 
 ## 7. 폴더에 입히기
 
+**맥**
 ```bash
 osascript -l JavaScript <SKILL>/scripts/icon.js set ~/Pictures/folder-icons/<이름>/icon_1_512.png "<폴더 경로>" ["<폴더 2>" ...]
 osascript -l JavaScript <SKILL>/scripts/icon.js has "<폴더 경로>"        # yes 면 성공
@@ -89,9 +94,19 @@ osascript -l JavaScript <SKILL>/scripts/icon.js has "<폴더 경로>"        # y
 - 바탕화면·문서 폴더를 처음 건드리면 맥이 접근 허용 창을 띄울 수 있다. **사용자가 직접 「허용」을 누르게** 안내한다.
 - 확인이 필요하면 `icon.js readback "<폴더>" check.png`로 맥이 실제로 보여 주는 그림을 저장해 비교한다.
 
-## 8. (선택) 새 폴더 자동 입히기
+**윈도우** (`.ico`를 쓴다. PNG는 받지 않는다)
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File <SKILL>\scripts\win_icon.ps1 set "<작업 폴더>\icon_1.ico" "<폴더 경로>" ["<폴더 2>" ...]
+powershell -NoProfile -ExecutionPolicy Bypass -File <SKILL>\scripts\win_icon.ps1 has "<폴더 경로>"       # yes 면 성공
+powershell -NoProfile -ExecutionPolicy Bypass -File <SKILL>\scripts\win_icon.ps1 readback "<폴더 경로>" check.png   # 윈도우가 실제로 보여 주는 그림
+```
+- 폴더 안에 숨은 `folder-icon.ico`와 `desktop.ini`가 생긴다(윈도우 「속성 → 사용자 지정 → 아이콘 변경」과 같은 방식). 폴더를 옮겨도 아이콘이 따라간다.
+- 문서·바탕화면처럼 원래 `desktop.ini`가 있는 폴더는 아이콘 줄만 더하고, 되돌리면 원래 내용 그대로 돌아온다.
+- 탐색기는 바로 새로 그린다. 옛 아이콘이 남아 보이면 F5, 그래도 그대로면 탐색기 창을 닫았다 연다.
 
-사용자가 원할 때만.
+## 8. (선택, 맥만) 새 폴더 자동 입히기
+
+사용자가 원할 때만. 윈도우는 아직 없다고 알리고, 자주 쓰는 폴더에 7단계로 입혀 준다.
 ```bash
 bash <SKILL>/scripts/auto/install_auto.sh ~/Pictures/folder-icons/<이름>/icon_1_512.png      # 기본: 바탕화면
 bash <SKILL>/scripts/auto/uninstall_auto.sh                                                  # 끄기
@@ -103,19 +118,21 @@ bash <SKILL>/scripts/auto/uninstall_auto.sh                                     
 ## 9. 되돌리기
 
 ```bash
-osascript -l JavaScript <SKILL>/scripts/icon.js remove "<폴더 경로>"
+osascript -l JavaScript <SKILL>/scripts/icon.js remove "<폴더 경로>"                                          # 맥
+powershell -NoProfile -ExecutionPolicy Bypass -File <SKILL>\scripts\win_icon.ps1 remove "<폴더 경로>"          # 윈도우
 ```
-또는 폴더 선택 → ⌘I(정보 가져오기) → 왼쪽 위 작은 아이콘 클릭 → delete.
+또는 맥: 폴더 선택 → ⌘I(정보 가져오기) → 왼쪽 위 작은 아이콘 클릭 → delete.
+윈도우: 폴더 우클릭 → 속성 → 사용자 지정 → 아이콘 변경 → 기본값 복원.
 
 ## 지킬 것
 
 - **남의 캐릭터·작품을 레퍼로 쓰지 않는다.** 유명 캐릭터 이름을 주문서에 쓰지 않고, 남의 그림을 생성에 붙이지 않는다. 「○○ 같은 그림체로」라고 하면 선 굵기·눈 모양·색감 같은 특징을 말로 풀어 쓴다. 레퍼는 사용자 본인 반려동물 사진이나 본인이 권리를 가진 캐릭터만.
 - 유료 생성은 매번 비용을 먼저 알리고 1장씩.
 - 사진은 사용자가 고른 생성 서비스로만 보낸다. 다른 곳에 올리지 않는다.
-- iCloud·드롭박스 같은 동기화 폴더에 입히면 숨은 `Icon` 파일도 같이 동기화된다는 걸 알려 준다.
+- iCloud·드롭박스·원드라이브 같은 동기화 폴더에 입히면 숨은 아이콘 파일(맥 `Icon`, 윈도우 `folder-icon.ico`·`desktop.ini`)도 같이 동기화된다는 걸 알려 준다.
 - 문제가 생기면 `references/troubleshooting.md`.
 
 ## 파일
 
-- `scripts/setup.sh` 처음 확인 · `scripts/make_icon.py` 다듬기 한 번에 · `scripts/imgops.py` 이미지 도구(OpenCV 있으면 씀) · `scripts/icon.js` 입히기·지우기·확인·되읽기 · `scripts/route.py` 생성 경로 기억 · `scripts/auto/` 새 폴더 자동
+- `scripts/setup.sh`·`setup.ps1` 처음 확인(맥·윈도우) · `scripts/make_icon.py` 다듬기 한 번에(PNG+ICO) · `scripts/imgops.py` 이미지 도구(OpenCV 있으면 씀) · `scripts/icon.js` 맥 입히기·지우기·확인·되읽기 · `scripts/win_icon.ps1` 윈도우 입히기·지우기·확인·되읽기 · `scripts/route.py` 생성 경로 기억 · `scripts/auto/` 맥 새 폴더 자동
 - `references/prompt_recipes.md` 주문서 틀 · `references/image_routes.md` 생성 경로별 방법 · `references/troubleshooting.md` 문제 해결

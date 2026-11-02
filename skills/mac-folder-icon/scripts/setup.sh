@@ -5,7 +5,11 @@
 # environment in ~/.config/mac-folder-icon/venv and installs only those two.
 set -uo pipefail
 CFG="${MFI_CONFIG_DIR:-$HOME/.config/mac-folder-icon}"
-[ "$(uname)" = "Darwin" ] || { echo "This skill works on macOS only."; exit 1; }
+HERE="$(cd "$(dirname "$0")" && pwd)"
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$HERE/setup.ps1" 2>/dev/null || echo "$HERE/setup.ps1")" ;;
+esac
+[ "$(uname)" = "Darwin" ] || { echo "This skill works on macOS or Windows only."; exit 1; }
 command -v osascript >/dev/null || { echo "osascript missing (macOS built-in tool)."; exit 1; }
 if ! command -v python3 >/dev/null; then
   echo "python3 not found. Run:  xcode-select --install   then try again."; exit 1

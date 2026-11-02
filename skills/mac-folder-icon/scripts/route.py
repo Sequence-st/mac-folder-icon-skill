@@ -28,7 +28,7 @@ def main():
     s.add_argument("--model", help="model name/id used on that route")
     a = ap.parse_args()
     if a.cmd == "get":
-        print(open(PATH).read().strip() if os.path.exists(PATH) else "none")
+        print(open(PATH, encoding="utf-8").read().strip() if os.path.exists(PATH) else "none")
     elif a.cmd == "clear":
         if os.path.exists(PATH):
             os.remove(PATH)
@@ -36,7 +36,7 @@ def main():
     else:
         os.makedirs(CFG, exist_ok=True)
         d = {"route": a.route, "tool": a.tool, "model": a.model, "saved": time.strftime("%Y-%m-%d %H:%M")}
-        json.dump(d, open(PATH, "w"), ensure_ascii=False)
+        json.dump(d, open(PATH, "w", encoding="utf-8"), ensure_ascii=False)
         print(json.dumps(d, ensure_ascii=False))
 
 
